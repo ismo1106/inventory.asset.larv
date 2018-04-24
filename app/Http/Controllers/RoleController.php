@@ -16,7 +16,8 @@ class RoleController extends Controller {
     public function index()
     {
         $roles = Role::all();
-        return view('roles.index')->with('roles', $roles);
+        $permissions = Permission::all();
+        return view('roles.index')->with(['roles' => $roles, 'permissions' => $permissions]);
     }
 
     /**
@@ -39,9 +40,9 @@ class RoleController extends Controller {
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name'=>'required|unique:roles|max:50',
-            'permissions' =>'required',
-            ]
+            'name' => 'required|unique:roles|max:50',
+            'permissions' => 'required',
+                ]
         );
 
         $name = $request['name'];
@@ -59,8 +60,7 @@ class RoleController extends Controller {
         }
 
         return redirect()->route('roles.index')
-            ->with('success_message',
-             'Role'. $role->name.' added!');
+                        ->with('success_message', 'Role' . $role->name . ' added!');
     }
 
     /**
