@@ -62,9 +62,10 @@
                         <td>{{ $role->name }}</td>
                         <td>{{  $role->permissions()->pluck('name')->implode(', ') }}</td>{{-- Retrieve array of permissions associated to a role and convert to string --}}
                         <td>
-                            <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-info btn-sm pull-left" style="margin-right: 3px;">Edit</a>
+                            <a href="{{ route('roles.edit', $role->id) }}" class="edit-rl btn btn-info btn-sm pull-left ladda-button" data-style="slide-left" style="margin-right: 3px;">
+                                <span class="ladda-label">Edit</span></a>
                             {!! Form::open(['method' => 'DELETE', 'route' => ['roles.destroy', $role->id] ]) !!}
-                            {!! Form::submit('Delete', ['class' => 'btn btn-danger btn-sm']) !!}
+                            {!! Form::submit('Delete', ['class' => 'delete-rl btn btn-danger btn-sm']) !!}
                             {!! Form::close() !!}
                         </td>
                     </tr>
@@ -99,7 +100,7 @@
 @push('script')
 <script>
 jQuery(document).ready(function () {
-    $('.edit-pm').click(function (e) {
+    $('.edit-rl').click(function (e) {
         e.preventDefault();
         var l = Ladda.create(this);
         var ini = $(this);
@@ -110,8 +111,8 @@ jQuery(document).ready(function () {
         $.get(url, function (response) {
             l.stop();
             ini.removeClass('disabled');
-            $('#modal-content-edit-permission').html(response);
-            $('#modal-edit-permission').modal('show');
+            $('#modal-content-edit-role').html(response);
+            $('#modal-edit-role').modal('show');
         }).fail(function () {
             l.stop();
             ini.removeClass('disabled');
@@ -119,12 +120,12 @@ jQuery(document).ready(function () {
         });
     });
 
-    $('.delete-pm').click(function (e) {
+    $('.delete-rl').click(function (e) {
         e.preventDefault();
         var ini = $(this).parent('form');
         swal({
             title: "Are you sure?",
-            text: "Permission akan dihapus secara permanen!",
+            text: "Role akan dihapus secara permanen!",
             type: "warning",
             showCancelButton: true,
             confirmButtonClass: "btn-danger",
