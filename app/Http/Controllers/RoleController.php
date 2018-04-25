@@ -16,7 +16,8 @@ class RoleController extends Controller {
     public function index()
     {
         $roles = Role::all();
-        return view('roles.index')->with('roles', $roles);
+        $permissions = Permission::all();
+        return view('roles.index')->with(['roles' => $roles, 'permissions' => $permissions]);
     }
 
     /**
@@ -39,9 +40,9 @@ class RoleController extends Controller {
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name'=>'required|unique:roles|max:50',
-            'permissions' =>'required',
-            ]
+            'name' => 'required|unique:roles|max:50',
+            'permissions' => 'required',
+                ]
         );
 
         $name = $request['name'];
@@ -58,9 +59,7 @@ class RoleController extends Controller {
             $role->givePermissionTo($p);
         }
 
-        return redirect()->route('roles.index')
-            ->with('success_message',
-             'Role'. $role->name.' added!');
+        return redirect()->route('roles.index')->with('success_message', 'Role' . $role->name . ' added!');
     }
 
     /**
@@ -82,7 +81,9 @@ class RoleController extends Controller {
      */
     public function edit($id)
     {
-        //
+        $role = Role::findOrFail($id);
+        $permissions = Permission::all();
+        return view('roles.edit', compact('role', 'permissions'));
     }
 
     /**
@@ -94,7 +95,27 @@ class RoleController extends Controller {
      */
     public function update(Request $request, $id)
     {
-        //
+        $role = Role::findOrFail($id);
+        $this->validate($request, [
+            'name' => 'required|max:50|unique:roles,name,' . $id,
+            'permissions' => 'required',
+        ]);
+
+        $input = $request->except(['permissions']);
+        $permissions = $request['permissions'];
+        $role->fill($input)->save();
+        $p_all = Permission::all();
+
+        foreach ($p_all as $p) {
+            $role->revokePermissionTo($p);
+        }
+
+        foreach ($permissions as $permission) {
+            $p = Permission::where('id', '=', $permission)->firstOrFail(); //Get corresponding form permission in db
+            $role->givePermissionTo($p);
+        }
+
+        return redirect()->route('roles.index')->with('success_message', 'Role' . $role->name . ' updated!');
     }
 
     /**
@@ -105,7 +126,10 @@ class RoleController extends Controller {
      */
     public function destroy($id)
     {
-        //
+        $role = Role::findOrFail($id);
+        $role->delete();
+
+        return redirect()->route('roles.index')->with('flash_message', 'Role deleted!');
     }
 
 }

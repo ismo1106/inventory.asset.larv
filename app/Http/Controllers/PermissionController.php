@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Lookup;
+use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use Illuminate\Http\Request;
-class LookupController extends Controller
-{
-    
-     /**
+
+class PermissionController extends Controller {
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -18,8 +17,7 @@ class LookupController extends Controller
     {
         $permissions = Permission::all();
         $roles = Role::get();
-        $lookups = Lookup::all(); 
-        return view('lookups.index')->with(['lookups' => $lookups,'permissions' => $permissions, 'roles' => $roles]);
+        return view('permissions.index')->with(['permissions' => $permissions, 'roles' => $roles]);
     }
 
     /**
@@ -30,7 +28,7 @@ class LookupController extends Controller
     public function create()
     {
         $roles = Role::get();
-        return view('lookups.create')->with('roles', $roles);
+        return view('permissions.create')->with('roles', $roles);
     }
 
     /**
@@ -40,17 +38,29 @@ class LookupController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {        
-        //##created_by
+    {
         $this->validate($request, [
-            'type' => 'required|max:40',
             'name' => 'required|max:40',
-            'value' => 'required|numeric',
-            'order_no' => 'required|numeric'
         ]);
-        $requestData = $request->all();        
-        Lookup::create($requestData);                
-        return redirect()->route('lookups.index')->with('success_message', 'Lookup ' .$request->type ." : " . $request->name . ' added!');
+
+        $name = $request['name'];
+        $permission = new Permission();
+        $permission->name = $name;
+
+        $roles = $request['roles'];
+
+        $permission->save();
+
+        if (!empty($request['roles'])) {
+            foreach ($roles as $role) {
+                $r = Role::where('id', '=', $role)->firstOrFail(); //Match input role to db record
+
+                $permission = Permission::where('name', '=', $name)->first();
+                $r->givePermissionTo($permission);
+            }
+        }
+
+        return redirect()->route('permissions.index')->with('success_message', 'Permission' . $permission->name . ' added!');
     }
 
     /**
@@ -71,9 +81,9 @@ class LookupController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {        
-        $lookup = Lookup::find($id);       
-        return view('lookups.edit', compact('lookup'));
+    {
+        $permission = Permission::find($id);
+        return view('permissions.edit', compact('permission'));
     }
 
     /**
@@ -85,16 +95,16 @@ class LookupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $lookup = Lookup::findOrFail($id);
+        $permission = Permission::findOrFail($id);
 
         $this->validate($request, [
             'name' => 'required|max:40',
         ]);
 
         $input = $request->all();
-        $lookup->fill($input)->save();
+        $permission->fill($input)->save();
 
-        return redirect()->route('lookups.index')->with('success_message', 'Lookup ' .$request->type ." : " . $request->name . ' updated!');
+        return redirect()->route('permissions.index')->with('success_message', 'Permission' . $permission->name . ' updated!');
     }
 
     /**
@@ -105,14 +115,15 @@ class LookupController extends Controller
      */
     public function destroy($id)
     {
-        $lookup = Lookup::findOrFail($id);
+        $permission = Permission::findOrFail($id);
 
-        if (empty($lookup)) {
-            return redirect()->route('lookups.index')->with('error_message', 'Cannot delete this Permission!');
+        if ($permission->name == "Administer roles & permissions") {
+            return redirect()->route('permissions.index')->with('error_message', 'Cannot delete this Permission!');
         }
 
-        $lookup->delete();
+        $permission->delete();
 
-        return redirect()->route('lookups.index')->with('success_message', 'Lookup deleted!');
+        return redirect()->route('permissions.index')->with('success_message', 'Permission deleted!');
     }
+
 }

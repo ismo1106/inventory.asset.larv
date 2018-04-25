@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', '| Roles')
+@section('title', '| Permissions')
 
 @push('css')
 <link href="assets/plugins/bootstrap-sweetalert/sweetalert.css" rel="stylesheet">
@@ -15,25 +15,32 @@
                 <div class="panel-heading-btn">
                     <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
                 </div>
-                <h4 class="panel-title">Add Role</h4>
+                <h4 class="panel-title">Add Permission</h4>
             </div>
             <div class="panel-body">
-                {{ Form::open(array('url' => 'roles')) }}
+                {{ Form::open(array('url' => 'permissions')) }}
+
                 <div class="form-group">
                     {{ Form::label('name', 'Name') }}
-                    {{ Form::text('name', null, array('class' => 'form-control')) }}
+                    {{ Form::text('name', '', array('class' => 'form-control')) }}
                 </div>
-                <h5><b>Assign Permissions</b></h5>
-                <div class='form-group'>
-                    @foreach ($permissions as $permission)
-                    {{ Form::checkbox('permissions[]',  $permission->id ) }}
-                    {{ Form::label($permission->name, ucfirst($permission->name)) }}<br>
+                <br>
 
-                    @endforeach
-                </div>
-                <div class='form-group'>
-                    {{ Form::submit('Add', array('class' => 'btn btn-primary')) }}
-                </div>
+                @if(!$roles->isEmpty())
+
+                <h4>Assign Permission to Roles</h4>
+
+                @foreach ($roles as $role) 
+                {{ Form::checkbox('roles[]',  $role->id ) }}
+                {{ Form::label($role->name, ucfirst($role->name)) }}<br>
+
+                @endforeach
+
+                @endif
+
+                <br>
+                {{ Form::submit('Add', array('class' => 'btn btn-primary')) }}
+
                 {{ Form::close() }}
             </div>
         </div>
@@ -45,47 +52,45 @@
                 <div class="panel-heading-btn">
                     <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
                 </div>
-                <h4 class="panel-title">Roles</h4>
+                <h4 class="panel-title">Permissions</h4>
             </div>
             <div class="panel-body">
                 <table class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>Role</th>
-                        <th>Permissions</th>
-                        <th>Operation</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($roles as $role)
-                    <tr>
-                        <td>{{ $role->name }}</td>
-                        <td>{{  $role->permissions()->pluck('name')->implode(', ') }}</td>{{-- Retrieve array of permissions associated to a role and convert to string --}}
-                        <td>
-                            <a href="{{ route('roles.edit', $role->id) }}" class="edit-rl btn btn-info btn-sm pull-left ladda-button" data-style="slide-left" style="margin-right: 3px;">
-                                <span class="ladda-label">Edit</span></a>
-                            {!! Form::open(['method' => 'DELETE', 'route' => ['roles.destroy', $role->id] ]) !!}
-                            {!! Form::submit('Delete', ['class' => 'delete-rl btn btn-danger btn-sm']) !!}
-                            {!! Form::close() !!}
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    <thead>
+                        <tr>
+                            <th>Permissions</th>
+                            <th>Operation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($permissions as $permission)
+                        <tr>
+                            <td>{{ $permission->name }}</td> 
+                            <td>
+                                <a href="{{ route('permissions.edit', $permission->id) }}" class="edit-pm btn btn-xs btn-info pull-left ladda-button" data-style="slide-left" style="margin-right: 3px;">
+                                    <span class="ladda-label">Edit</span></a>
+                                {!! Form::open(['method' => 'DELETE', 'route' => ['permissions.destroy', $permission->id] ]) !!}
+                                {!! Form::submit('Delete', ['class' => 'delete-pm btn btn-xs btn-danger']) !!}
+                                {!! Form::close() !!}
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Modal Edit Account User -->
-<div class="modal fade" id="modal-edit-role" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="modal-edit-permission" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">Edit Role</h4>
+                <h4 class="modal-title">Edit Permission</h4>
             </div>
-            <div id="modal-content-edit-role" class="modal-body">
+            <div id="modal-content-edit-permission" class="modal-body">
             </div>
         </div>
     </div>
@@ -100,7 +105,7 @@
 @push('script')
 <script>
 jQuery(document).ready(function () {
-    $('.edit-rl').click(function (e) {
+    $('.edit-pm').click(function (e) {
         e.preventDefault();
         var l = Ladda.create(this);
         var ini = $(this);
@@ -111,8 +116,8 @@ jQuery(document).ready(function () {
         $.get(url, function (response) {
             l.stop();
             ini.removeClass('disabled');
-            $('#modal-content-edit-role').html(response);
-            $('#modal-edit-role').modal('show');
+            $('#modal-content-edit-permission').html(response);
+            $('#modal-edit-permission').modal('show');
         }).fail(function () {
             l.stop();
             ini.removeClass('disabled');
@@ -120,12 +125,12 @@ jQuery(document).ready(function () {
         });
     });
 
-    $('.delete-rl').click(function (e) {
+    $('.delete-pm').click(function (e) {
         e.preventDefault();
         var ini = $(this).parent('form');
         swal({
             title: "Are you sure?",
-            text: "Role akan dihapus secara permanen!",
+            text: "Permission akan dihapus secara permanen!",
             type: "warning",
             showCancelButton: true,
             confirmButtonClass: "btn-danger",

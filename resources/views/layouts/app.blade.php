@@ -5,7 +5,7 @@
     <!--<![endif]-->
     <head>
         <meta charset="utf-8" />
-        <title>FAST | @yield('title')</title>
+        <title>FAST @yield('title')</title>
         <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
         <meta content="" name="description" />
         <meta content="" name="author" />
@@ -25,9 +25,7 @@
         <!-- ================== END BASE CSS STYLE ================== -->
 
         <!-- ================== BEGIN PAGE LEVEL STYLE ================== -->
-        <link href="{{ asset('assets/plugins/jquery-jvectormap/jquery-jvectormap.css') }}" rel="stylesheet" />
-        <link href="{{ asset('assets/plugins/bootstrap-datepicker/css/bootstrap-datepicker.css') }}" rel="stylesheet" />
-        <link href="{{ asset('assets/plugins/gritter/css/jquery.gritter.css') }}" rel="stylesheet" />
+        @stack('css')
         <!-- ================== END PAGE LEVEL STYLE ================== -->
 
         <!-- ================== BEGIN BASE JS ================== -->
@@ -74,7 +72,7 @@
                     </div>
                 </div>
                 @endif
-                
+
                 @yield('content')
             </div>
             <!-- end #content -->
@@ -100,23 +98,13 @@
         <!-- ================== END BASE JS ================== -->
 
         <!-- ================== BEGIN PAGE LEVEL JS ================== -->
-        <script src="{{ asset('assets/plugins/gritter/js/jquery.gritter.js') }}"></script>
-        <script src="{{ asset('assets/plugins/flot/jquery.flot.min.js') }}"></script>
-        <script src="{{ asset('assets/plugins/flot/jquery.flot.time.min.js') }}"></script>
-        <script src="{{ asset('assets/plugins/flot/jquery.flot.resize.min.js') }}"></script>
-        <script src="{{ asset('assets/plugins/flot/jquery.flot.pie.min.js') }}"></script>
-        <script src="{{ asset('assets/plugins/sparkline/jquery.sparkline.js') }}"></script>
-        <script src="{{ asset('assets/plugins/jquery-jvectormap/jquery-jvectormap.min.js') }}"></script>
-        <script src="{{ asset('assets/plugins/jquery-jvectormap/jquery-jvectormap-world-mill-en.js') }}"></script>
-        <script src="{{ asset('assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js') }}"></script>
-        <script src="{{ asset('assets/js/dashboard.min.js') }}"></script>
+        @stack('js')
         <script src="{{ asset('assets/js/apps.min.js') }}"></script>
         <!-- ================== END PAGE LEVEL JS ================== -->
 
         <script>
 $(document).ready(function () {
-    //App.init();
-    //Dashboard.init();
+    App.init();
 });
         </script>
 

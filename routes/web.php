@@ -12,6 +12,9 @@
  */
 
 Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('home');
+    }
     return view('welcome');
 });
 
@@ -19,4 +22,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('/roles', 'RoleController');
+
 Route::resource('/lookups', 'LookupController');
+
+Route::resource('/permissions', 'PermissionController');
