@@ -22,5 +22,8 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('/roles', 'RoleController');
+
+Route::resource('/lookups', 'LookupController');
+
 Route::resource('/permissions', 'PermissionController');
 Route::resource('/users', 'UserController');
