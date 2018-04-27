@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', '| Lookup')
+@section('title', '| Province')
 
 @push('css')
 <link href="assets/plugins/bootstrap-sweetalert/sweetalert.css" rel="stylesheet">
@@ -9,36 +9,42 @@
 
 @section('content')
 <div class="row">   
-    <div class="col-md-12 col-sm-12">
+    <div class="col-md-7 col-sm-12">
         <div class="panel panel-inverse">
             <div class="panel-heading">
                 <div class="panel-heading-btn">
                     <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
                 </div>
-                <h4 class="panel-title">Lookup</h4>
+                <h4 class="panel-title">Province</h4>
             </div>
+            {!! Form::open(['method' => 'GET', 'url' => '/provinces', 'class' => 'navbar-form navbar-right', 'role' => 'search'])  !!}
+            <div class="input-group">
+                <input type="text" class="form-control" name="search" placeholder="Search...">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </span>
+            </div>
+            {!! Form::close() !!}
             <div class="panel-body">
                 <table class="table table-bordered table-striped">
                     <thead>
-                        <tr>
-                            <th>Type</th>
+                        <tr>                            
                             <th>Name</th>
-                            <th>Value</th>
-                            <th>Order Number</th>
+                            <th>Value</th>                            
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($lookups as $lookup)
-                        <tr>
-                            <td>{{ $lookup->type }}</td> 
-                            <td>{{ $lookup->name }}</td> 
-                            <td>{{ $lookup->value }}</td>                             
-                            <td>{{ $lookup->order_no }}</td> 
+                        @foreach ($provinces as $province)
+                        <tr>                            
+                            <td>{{ $province->name }}</td> 
+                            <td>{{ $province->value }}</td>                                                         
                             <td>
-                                <a href="{{ route('lookups.edit', $lookup->id) }}" class="edit-pm btn btn-xs btn-info pull-left ladda-button" data-style="slide-left" style="margin-right: 3px;">
+                                <a href="{{ route('provinces.edit', $province->id) }}" class="edit-pm btn btn-xs btn-info pull-left ladda-button" data-style="slide-left" style="margin-right: 3px;">
                                     <span class="ladda-label">Edit</span></a>
-                                {!! Form::open(['method' => 'DELETE', 'route' => ['lookups.destroy', $lookup->id] ]) !!}
+                                {!! Form::open(['method' => 'DELETE', 'route' => ['provinces.destroy', $province->id] ]) !!}
                                 {!! Form::submit('Delete', ['class' => 'delete-pm btn btn-xs btn-danger']) !!}
                                 {!! Form::close() !!}
                             </td>
@@ -46,25 +52,22 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="pagination-wrapper pull-right"> {!! $provinces->appends(['search' => Request::get('search')])->render() !!} </div>
             </div>
         </div>
     </div>
     
-     <div class="col-md-6 col-sm-12">
+     <div class="col-md-5 col-sm-12">
         <div class="panel panel-inverse">
             <div class="panel-heading">
                 <div class="panel-heading-btn">
                     <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
                 </div>
-                <h4 class="panel-title">Add Lookup</h4>
+                <h4 class="panel-title">Add Province</h4>
             </div>
             <div class="panel-body">
-                {{ Form::open(array('url' => 'lookups')) }}
-
-                <div class="form-group">
-                    {{ Form::label('type', 'Type') }}
-                    {{ Form::text('type', '', array('class' => 'form-control')) }}
-                </div>
+                {{ Form::open(array('url' => 'provinces')) }}
+                
                 <div class="form-group">
                     {{ Form::label('name', 'Name') }}
                     {{ Form::text('name', '', array('class' => 'form-control')) }}
@@ -72,11 +75,7 @@
                  <div class="form-group">
                     {{ Form::label('value', 'Value') }}
                     {{ Form::text('value', '', array('class' => 'form-control')) }}
-                </div>   
-                <div class="form-group">
-                    {{ Form::label('order_no', 'Order Number') }}
-                    {{ Form::text('order_no', '', array('class' => 'form-control')) }}
-                </div>   
+                </div>                     
                 {{ Form::submit('Add', array('class' => 'btn btn-primary')) }}
 
                 {{ Form::close() }}
@@ -87,14 +86,14 @@
 </div>
 
 <!-- Modal Edit Account User -->
-<div class="modal fade" id="modal-edit-lookup" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="modal-edit" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                 <h4 class="modal-title">Edit Lookup</h4>
             </div>
-            <div id="modal-content-edit-lookup" class="modal-body">
+            <div id="modal-content-edit" class="modal-body">
             </div>
         </div>
     </div>
@@ -119,8 +118,8 @@ jQuery(document).ready(function () {
         $.get(url, function (response) {            
             l.stop();
             ini.removeClass('disabled');
-            $('#modal-content-edit-lookup').html(response);
-            $('#modal-edit-lookup').modal('show');
+            $('#modal-content-edit').html(response);
+            $('#modal-edit').modal('show');
         }).fail(function () {
             l.stop();
             ini.removeClass('disabled');

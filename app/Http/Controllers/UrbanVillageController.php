@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Lookup;
+use App\Models\SubDistrict;
+use App\Models\Province;
+use App\Models\City;
+use App\Models\UrbanVillage;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
-class LookupController extends Controller
+class UrbanVillageController extends Controller
 {
     
      /**
@@ -19,18 +22,21 @@ class LookupController extends Controller
         $permissions = Permission::all();
         $roles = Role::get();        
         
+        $province = Province::get()->pluck('name', 'id')->all();
+        $city = City::get()->pluck('name', 'id')->all();
+        $sub_district = SubDistrict::get()->pluck('name', 'id')->all();
         $keyword = $request->get('search');
         $perPage = 5;
 
         if (!empty($keyword)) {
-            $lookups = Lookup::where('name', 'LIKE', "%$keyword%")
+            $urbanvillages = UrbanVillage::where('name', 'LIKE', "%$keyword%")
 				->orWhere('type', 'LIKE', "%$keyword%")
 				
                 ->paginate($perPage);
         } else {
-            $lookups = Lookup::paginate($perPage);
+            $urbanvillages = UrbanVillage::paginate($perPage);
         }                
-        return view('lookups.index')->with(['lookups' => $lookups,'permissions' => $permissions, 'roles' => $roles]);
+        return view('urbanvillages.index')->with(['urbanvillages' => $urbanvillages,'permissions' => $permissions, 'roles' => $roles,'sub_district' => $sub_district,'city' => $city,'province' => $province]);
     }
 
     /**
@@ -41,7 +47,7 @@ class LookupController extends Controller
     public function create()
     {
         $roles = Role::get();
-        return view('lookups.create')->with('roles', $roles);
+        return view('urbanvillages.create')->with('roles', $roles);
     }
 
     /**
@@ -60,8 +66,8 @@ class LookupController extends Controller
             'order_no' => 'required|numeric'
         ]);
         $requestData = $request->all();        
-        Lookup::create($requestData);                
-        return redirect()->route('lookups.index')->with('success_message', 'Lookup ' .$request->type ." : " . $request->name . ' added!');
+        UrbanVillage::create($requestData);                
+        return redirect()->route('urbanvillages.index')->with('success_message', 'Urban Village ' .$request->type ." : " . $request->name . ' added!');
     }
 
     /**
@@ -83,8 +89,11 @@ class LookupController extends Controller
      */
     public function edit($id)
     {        
-        $lookup = Lookup::find($id);       
-        return view('lookups.edit', compact('lookup'));
+        $urbanvillage = UrbanVillage::find($id);   
+        $province = Province::get()->pluck('name', 'id')->all();
+        $city = City::get()->pluck('name', 'id')->all();
+        $sub_district = SubDistrict::get()->pluck('name', 'id')->all();
+        return view('urbanvillages.edit', compact('urbanvillage','province','city','sub_district'));
     }
 
     /**
@@ -96,16 +105,16 @@ class LookupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $lookup = Lookup::findOrFail($id);
+        $urbanvillage = UrbanVillage::findOrFail($id);
 
         $this->validate($request, [
             'name' => 'required|max:40',
         ]);
 
         $input = $request->all();
-        $lookup->fill($input)->save();
+        $urbanvillage->fill($input)->save();
 
-        return redirect()->route('lookups.index')->with('success_message', 'Lookup ' .$request->type ." : " . $request->name . ' updated!');
+        return redirect()->route('urbanvillages.index')->with('success_message', 'Urban Village ' .$request->type ." : " . $request->name . ' updated!');
     }
 
     /**
@@ -116,14 +125,14 @@ class LookupController extends Controller
      */
     public function destroy($id)
     {
-        $lookup = Lookup::findOrFail($id);
+        $urbanvillage = UrbanVillage::findOrFail($id);
 
-        if (empty($lookup)) {
-            return redirect()->route('lookups.index')->with('error_message', 'Cannot delete this Permission!');
+        if (empty($urbanvillage)) {
+            return redirect()->route('urbanvillages.index')->with('error_message', 'Cannot delete this Urban Village!');
         }
 
-        $lookup->delete();
+        $urbanvillage->delete();
 
-        return redirect()->route('lookups.index')->with('success_message', 'Lookup deleted!');
+        return redirect()->route('urbanvillages.index')->with('success_message', 'Urban Village deleted!');
     }
 }

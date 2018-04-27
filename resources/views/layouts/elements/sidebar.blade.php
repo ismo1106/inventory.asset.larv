@@ -26,15 +26,20 @@
             </li>
             <li class="has-sub">
                 <a href="javascript:;">
-                    <span class="badge pull-right">10</span>
+                    <span class="badge pull-right"></span>
                     <i class="fa fa-inbox"></i> 
-                    <span>Email</span>
+                    <span>Admin Management</span>
                 </a>
                 <ul class="sub-menu">
-                    <li><a href="email_inbox.html">Inbox v1</a></li>
-                    <li><a href="email_inbox_v2.html">Inbox v2</a></li>
-                    <li><a href="email_compose.html">Compose</a></li>
-                    <li><a href="email_detail.html">Detail</a></li>
+                    <li><a href="{!! route('permissions.index') !!}">Permission</a></li>
+                    <li><a href="{!! route('roles.index') !!}">Role</a></li>
+                    <li><a href="{!! route('users.index') !!}">User - OnProgress</a></li>
+                    <li><a href="{!! route('lookups.index') !!}">Lookup</a></li>
+                    <li><a href="{!! route('units.index') !!}">Unit</a></li>
+                    <li><a href="{!! route('cities.index') !!}">City</a></li>
+                    <li><a href="{!! route('provinces.index') !!}">Province</a></li>
+                    <li><a href="{!! route('subdistricts.index') !!}">Sub Disctrict</a></li>
+                    <li><a href="{!! route('urbanvillages.index') !!}">Urban Village</a></li>
                 </ul>
             </li>
             <!-- begin sidebar minify button -->

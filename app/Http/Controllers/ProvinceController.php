@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Lookup;
+use App\Models\Province;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
-class LookupController extends Controller
+class ProvinceController extends Controller
 {
     
      /**
@@ -23,14 +23,14 @@ class LookupController extends Controller
         $perPage = 5;
 
         if (!empty($keyword)) {
-            $lookups = Lookup::where('name', 'LIKE', "%$keyword%")
+            $provinces = Province::where('name', 'LIKE', "%$keyword%")
 				->orWhere('type', 'LIKE', "%$keyword%")
 				
                 ->paginate($perPage);
         } else {
-            $lookups = Lookup::paginate($perPage);
+            $provinces = Province::paginate($perPage);
         }                
-        return view('lookups.index')->with(['lookups' => $lookups,'permissions' => $permissions, 'roles' => $roles]);
+        return view('provinces.index')->with(['provinces' => $provinces,'permissions' => $permissions, 'roles' => $roles]);
     }
 
     /**
@@ -41,7 +41,7 @@ class LookupController extends Controller
     public function create()
     {
         $roles = Role::get();
-        return view('lookups.create')->with('roles', $roles);
+        return view('provinces.create')->with('roles', $roles);
     }
 
     /**
@@ -53,15 +53,13 @@ class LookupController extends Controller
     public function store(Request $request)
     {        
         //##created_by
-        $this->validate($request, [
-            'type' => 'required|max:40',
+        $this->validate($request, [            
             'name' => 'required|max:40',
-            'value' => 'required|numeric',
-            'order_no' => 'required|numeric'
+            'value' => 'required|unique:provinces|numeric'            
         ]);
         $requestData = $request->all();        
-        Lookup::create($requestData);                
-        return redirect()->route('lookups.index')->with('success_message', 'Lookup ' .$request->type ." : " . $request->name . ' added!');
+        Province::create($requestData);                
+        return redirect()->route('provinces.index')->with('success_message', 'Province ' .$request->type ." : " . $request->name . ' added!');
     }
 
     /**
@@ -83,8 +81,8 @@ class LookupController extends Controller
      */
     public function edit($id)
     {        
-        $lookup = Lookup::find($id);       
-        return view('lookups.edit', compact('lookup'));
+        $province = Province::find($id);       
+        return view('provinces.edit', compact('province'));
     }
 
     /**
@@ -96,16 +94,17 @@ class LookupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $lookup = Lookup::findOrFail($id);
+        $province = Province::findOrFail($id);
 
         $this->validate($request, [
             'name' => 'required|max:40',
+            'value' => 'required|unique:provinces|numeric'       
         ]);
 
         $input = $request->all();
-        $lookup->fill($input)->save();
+        $province->fill($input)->save();
 
-        return redirect()->route('lookups.index')->with('success_message', 'Lookup ' .$request->type ." : " . $request->name . ' updated!');
+        return redirect()->route('provinces.index')->with('success_message', 'Province ' .$request->type ." : " . $request->name . ' updated!');
     }
 
     /**
@@ -116,14 +115,14 @@ class LookupController extends Controller
      */
     public function destroy($id)
     {
-        $lookup = Lookup::findOrFail($id);
+        $province = Province::findOrFail($id);
 
-        if (empty($lookup)) {
-            return redirect()->route('lookups.index')->with('error_message', 'Cannot delete this Permission!');
+        if (empty($province)) {
+            return redirect()->route('provinces.index')->with('error_message', 'Cannot delete this Province!');
         }
 
-        $lookup->delete();
+        $province->delete();
 
-        return redirect()->route('lookups.index')->with('success_message', 'Lookup deleted!');
+        return redirect()->route('provinces.index')->with('success_message', 'Province deleted!');
     }
 }

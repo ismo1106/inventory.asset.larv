@@ -17,6 +17,16 @@
                 </div>
                 <h4 class="panel-title">Lookup</h4>
             </div>
+            {!! Form::open(['method' => 'GET', 'url' => '/lookups', 'class' => 'navbar-form navbar-right', 'role' => 'search'])  !!}
+            <div class="input-group">
+                <input type="text" class="form-control" name="search" placeholder="Search...">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </span>
+            </div>
+            {!! Form::close() !!}
             <div class="panel-body">
                 <table class="table table-bordered table-striped">
                     <thead>
@@ -46,6 +56,7 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="pagination-wrapper pull-right"> {!! $lookups->appends(['search' => Request::get('search')])->render() !!} </div>
             </div>
         </div>
     </div>

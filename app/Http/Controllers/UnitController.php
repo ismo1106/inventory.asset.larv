@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Unit;
 use App\Models\Lookup;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
-class LookupController extends Controller
+class UnitController extends Controller
 {
     
      /**
@@ -15,22 +16,23 @@ class LookupController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {
+    {   
         $permissions = Permission::all();
-        $roles = Role::get();        
+        $roles = Role::get();                
+        $active = Lookup::where('type', 'IsActive')->get()->pluck('name', 'value')->all();
         
         $keyword = $request->get('search');
         $perPage = 5;
 
         if (!empty($keyword)) {
-            $lookups = Lookup::where('name', 'LIKE', "%$keyword%")
-				->orWhere('type', 'LIKE', "%$keyword%")
+            $units = Unit::where('name', 'LIKE', "%$keyword%")
+				->orWhere('code', 'LIKE', "%$keyword%")
 				
                 ->paginate($perPage);
         } else {
-            $lookups = Lookup::paginate($perPage);
+            $units = Unit::paginate($perPage);
         }                
-        return view('lookups.index')->with(['lookups' => $lookups,'permissions' => $permissions, 'roles' => $roles]);
+        return view('units.index')->with(['units' => $units,'permissions' => $permissions, 'roles' => $roles, 'active' => $active]);
     }
 
     /**
@@ -41,7 +43,7 @@ class LookupController extends Controller
     public function create()
     {
         $roles = Role::get();
-        return view('lookups.create')->with('roles', $roles);
+        return view('units.create')->with('roles', $roles);
     }
 
     /**
@@ -54,14 +56,15 @@ class LookupController extends Controller
     {        
         //##created_by
         $this->validate($request, [
-            'type' => 'required|max:40',
+            'type' => 'required|numeric|max:40',
             'name' => 'required|max:40',
-            'value' => 'required|numeric',
-            'order_no' => 'required|numeric'
+            'code' => 'required|numeric',
+            'short_name' => 'required|max:20',
+            'active' => 'required|numeric'
         ]);
         $requestData = $request->all();        
-        Lookup::create($requestData);                
-        return redirect()->route('lookups.index')->with('success_message', 'Lookup ' .$request->type ." : " . $request->name . ' added!');
+        Unit::create($requestData);                
+        return redirect()->route('units.index')->with('success_message', 'Unit ' .$request->type ." : " . $request->name . ' added!');
     }
 
     /**
@@ -83,8 +86,9 @@ class LookupController extends Controller
      */
     public function edit($id)
     {        
-        $lookup = Lookup::find($id);       
-        return view('lookups.edit', compact('lookup'));
+        $unit = Unit::find($id);       
+        $active = Lookup::where('type', 'IsActive')->get()->pluck('name', 'value')->all();
+        return view('units.edit', compact('unit','active'));
     }
 
     /**
@@ -96,16 +100,20 @@ class LookupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $lookup = Lookup::findOrFail($id);
+        $unit = Unit::findOrFail($id);
 
         $this->validate($request, [
+              'type' => 'required|max:40',
             'name' => 'required|max:40',
+            'code' => 'required|numeric',
+            'short_name' => 'required|max:20',
+            'active' => 'required|numeric'
         ]);
 
         $input = $request->all();
-        $lookup->fill($input)->save();
+        $unit->fill($input)->save();
 
-        return redirect()->route('lookups.index')->with('success_message', 'Lookup ' .$request->type ." : " . $request->name . ' updated!');
+        return redirect()->route('units.index')->with('success_message', 'Unit ' .$request->type ." : " . $request->name . ' updated!');
     }
 
     /**
@@ -116,14 +124,14 @@ class LookupController extends Controller
      */
     public function destroy($id)
     {
-        $lookup = Lookup::findOrFail($id);
+        $unit = Unit::findOrFail($id);
 
-        if (empty($lookup)) {
-            return redirect()->route('lookups.index')->with('error_message', 'Cannot delete this Permission!');
+        if (empty($unit)) {
+            return redirect()->route('units.index')->with('error_message', 'Cannot delete this Unit!');
         }
 
-        $lookup->delete();
+        $unit->delete();
 
-        return redirect()->route('lookups.index')->with('success_message', 'Lookup deleted!');
+        return redirect()->route('units.index')->with('success_message', 'Unit deleted!');
     }
 }

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Lookup;
+use App\Models\City;
+use App\Models\Province;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
-class LookupController extends Controller
+use Illuminate\Validation\Rule;
+class CityController extends Controller
 {
     
      /**
@@ -17,20 +19,22 @@ class LookupController extends Controller
     public function index(Request $request)
     {
         $permissions = Permission::all();
-        $roles = Role::get();        
+        $roles = Role::get();                
+        $province = Province::get()->pluck('name', 'id')->all();
         
         $keyword = $request->get('search');
         $perPage = 5;
 
         if (!empty($keyword)) {
-            $lookups = Lookup::where('name', 'LIKE', "%$keyword%")
+            $cities = City::where('name', 'LIKE', "%$keyword%")
 				->orWhere('type', 'LIKE', "%$keyword%")
 				
                 ->paginate($perPage);
         } else {
-            $lookups = Lookup::paginate($perPage);
+            $cities = City::paginate($perPage);
         }                
-        return view('lookups.index')->with(['lookups' => $lookups,'permissions' => $permissions, 'roles' => $roles]);
+        
+        return view('cities.index')->with(['cities' => $cities,'permissions' => $permissions, 'roles' => $roles, 'province' => $province]);
     }
 
     /**
@@ -53,15 +57,14 @@ class LookupController extends Controller
     public function store(Request $request)
     {        
         //##created_by
-        $this->validate($request, [
-            'type' => 'required|max:40',
+        $this->validate($request, [            
             'name' => 'required|max:40',
-            'value' => 'required|numeric',
-            'order_no' => 'required|numeric'
+            'value' => 'required|unique:cities|numeric',
+            'province_id' => 'required|numeric'
         ]);
         $requestData = $request->all();        
-        Lookup::create($requestData);                
-        return redirect()->route('lookups.index')->with('success_message', 'Lookup ' .$request->type ." : " . $request->name . ' added!');
+        City::create($requestData);                
+        return redirect()->route('cities.index')->with('success_message', 'City ' .$request->type ." : " . $request->name . ' added!');
     }
 
     /**
@@ -83,8 +86,9 @@ class LookupController extends Controller
      */
     public function edit($id)
     {        
-        $lookup = Lookup::find($id);       
-        return view('lookups.edit', compact('lookup'));
+        $city = City::find($id);       
+        $province = Province::get()->pluck('name', 'id')->all();
+        return view('cities.edit', compact('city','province'));
     }
 
     /**
@@ -96,16 +100,18 @@ class LookupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $lookup = Lookup::findOrFail($id);
+        $city = City::findOrFail($id);
 
         $this->validate($request, [
             'name' => 'required|max:40',
+            'value' => ['required',Rule::unique('cities')->ignore($city->id),'numeric'],
+            'province_id' => 'required|numeric'
         ]);
 
         $input = $request->all();
-        $lookup->fill($input)->save();
+        $city->fill($input)->save();
 
-        return redirect()->route('lookups.index')->with('success_message', 'Lookup ' .$request->type ." : " . $request->name . ' updated!');
+        return redirect()->route('cities.index')->with('success_message', 'City ' .$request->name ." : " . $request->value . ' updated!');
     }
 
     /**
@@ -116,14 +122,14 @@ class LookupController extends Controller
      */
     public function destroy($id)
     {
-        $lookup = Lookup::findOrFail($id);
+        $city = Cityt::findOrFail($id);
 
-        if (empty($lookup)) {
-            return redirect()->route('lookups.index')->with('error_message', 'Cannot delete this Permission!');
+        if (empty($city)) {
+            return redirect()->route('cities.index')->with('error_message', 'Cannot delete this City!');
         }
 
-        $lookup->delete();
+        $city->delete();
 
-        return redirect()->route('lookups.index')->with('success_message', 'Lookup deleted!');
+        return redirect()->route('cities.index')->with('success_message', 'City deleted!');
     }
 }

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', '| Lookup')
+@section('title', '| Urban Village')
 
 @push('css')
 <link href="assets/plugins/bootstrap-sweetalert/sweetalert.css" rel="stylesheet">
@@ -15,30 +15,40 @@
                 <div class="panel-heading-btn">
                     <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
                 </div>
-                <h4 class="panel-title">Lookup</h4>
+                <h4 class="panel-title">Urban Village</h4>
             </div>
+            {!! Form::open(['method' => 'GET', 'url' => '/urbanvillages', 'class' => 'navbar-form navbar-right', 'role' => 'search'])  !!}
+            <div class="input-group">
+                <input type="text" class="form-control" name="search" placeholder="Search...">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </span>
+            </div>
+            {!! Form::close() !!}
             <div class="panel-body">
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>Type</th>
                             <th>Name</th>
+                            <th>Postcode</th>
                             <th>Value</th>
-                            <th>Order Number</th>
+                            <th>Sub District</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($lookups as $lookup)
+                        @foreach ($urbanvillages as $urbanvillage)
                         <tr>
-                            <td>{{ $lookup->type }}</td> 
-                            <td>{{ $lookup->name }}</td> 
-                            <td>{{ $lookup->value }}</td>                             
-                            <td>{{ $lookup->order_no }}</td> 
+                            <td>{{ $urbanvillage->name }}</td> 
+                            <td>{{ $urbanvillage->postcode }}</td> 
+                            <td>{{ $urbanvillage->value }}</td>                             
+                            <td>{{ $urbanvillage->sub_districts_id }}</td> 
                             <td>
-                                <a href="{{ route('lookups.edit', $lookup->id) }}" class="edit-pm btn btn-xs btn-info pull-left ladda-button" data-style="slide-left" style="margin-right: 3px;">
+                                <a href="{{ route('urbanvillages.edit', $urbanvillage->id) }}" class="edit-pm btn btn-xs btn-info pull-left ladda-button" data-style="slide-left" style="margin-right: 3px;">
                                     <span class="ladda-label">Edit</span></a>
-                                {!! Form::open(['method' => 'DELETE', 'route' => ['lookups.destroy', $lookup->id] ]) !!}
+                                {!! Form::open(['method' => 'DELETE', 'route' => ['urbanvillages.destroy', $urbanvillage->id] ]) !!}
                                 {!! Form::submit('Delete', ['class' => 'delete-pm btn btn-xs btn-danger']) !!}
                                 {!! Form::close() !!}
                             </td>
@@ -46,6 +56,7 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="pagination-wrapper pull-right"> {!! $urbanvillages->appends(['search' => Request::get('search')])->render() !!} </div>
             </div>
         </div>
     </div>
@@ -56,27 +67,30 @@
                 <div class="panel-heading-btn">
                     <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
                 </div>
-                <h4 class="panel-title">Add Lookup</h4>
+                <h4 class="panel-title">Add Urban Village</h4>
             </div>
             <div class="panel-body">
-                {{ Form::open(array('url' => 'lookups')) }}
-
-                <div class="form-group">
-                    {{ Form::label('type', 'Type') }}
-                    {{ Form::text('type', '', array('class' => 'form-control')) }}
-                </div>
-                <div class="form-group">
+                {{ Form::open(array('url' => 'urbanvillages')) }}
+<div class="form-group">
                     {{ Form::label('name', 'Name') }}
                     {{ Form::text('name', '', array('class' => 'form-control')) }}
                 </div>
                  <div class="form-group">
                     {{ Form::label('value', 'Value') }}
                     {{ Form::text('value', '', array('class' => 'form-control')) }}
-                </div>   
+                </div>  
                 <div class="form-group">
-                    {{ Form::label('order_no', 'Order Number') }}
-                    {{ Form::text('order_no', '', array('class' => 'form-control')) }}
-                </div>   
+                    {{ Form::label('province_id', 'Province', array('class' => 'col-md-12')) }}                    
+                    {{ Form::select('province_id', $province, null, array('class' => 'form-control', 'placeholder' => 'Pilih Provinsi..')) }}                    
+                </div>
+                <div class="form-group">
+                    {{ Form::label('city_id', 'City', array('class' => 'col-md-12')) }}                    
+                    {{ Form::select('city_id', $city, null, array('class' => 'form-control', 'placeholder' => 'Pilih City..')) }}                    
+                </div>
+                <div class="form-group">
+                    {{ Form::label('sub_districts_id', 'Sub District', array('class' => 'col-md-12')) }}                    
+                    {{ Form::select('sub_districts_id', $sub_district, null, array('class' => 'form-control', 'placeholder' => 'Pilih Sub District..')) }}                    
+                </div>
                 {{ Form::submit('Add', array('class' => 'btn btn-primary')) }}
 
                 {{ Form::close() }}

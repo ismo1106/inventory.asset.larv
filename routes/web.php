@@ -27,3 +27,8 @@ Route::resource('/lookups', 'LookupController');
 
 Route::resource('/permissions', 'PermissionController');
 Route::resource('/users', 'UserController');
+Route::resource('/units', 'UnitController');
+Route::resource('/cities', 'CityController');
+Route::resource('/provinces', 'ProvinceController');
+Route::resource('/subdistricts', 'SubDistrictController');
+Route::resource('/urbanvillages', 'UrbanVillageController');
