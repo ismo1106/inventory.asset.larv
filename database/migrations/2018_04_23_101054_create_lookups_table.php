@@ -4,8 +4,8 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateLookupsTable extends Migration
-{
+class CreateLookupsTable extends Migration {
+
     /**
      * Run the migrations.
      *
@@ -15,13 +15,13 @@ class CreateLookupsTable extends Migration
     {
         Schema::create('lookups', function (Blueprint $table) {
             $table->increments('id');
-			$table->string('type');
-            $table->string('name');            
+            $table->string('type');
+            $table->string('name');
             $table->integer('value');
             $table->integer('order_no')->nullable();
             $table->integer('created_by')->nullable();
-			$table->integer('updated_by')->nullable();
-			$table->timestamp('delete_at')->nullable();
+            $table->integer('updated_by')->nullable();
+            $table->timestamp('delete_at')->nullable();
             $table->timestamps();
         });
     }
@@ -35,4 +35,5 @@ class CreateLookupsTable extends Migration
     {
         Schema::dropIfExists('lookups');
     }
+
 }
