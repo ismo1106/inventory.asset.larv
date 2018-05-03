@@ -9,8 +9,8 @@
 
 ## Peraturan Permission (Middleware Route)
 
-Name Permission menggunakan Nama Conttoller (without 'Controller' string) dengan separator (.) kemudian diikuti nama method atau action, contoh:
-* Contorller Class name : `UserController`
+Name Permission menggunakan Nama Controller (without 'Controller' string) dengan separator (.) kemudian diikuti nama method atau action, contoh:
+* Controller Class name : `UserController`
 * Method function name : `index`
 * Permission Name must use : `User.index` 
 
