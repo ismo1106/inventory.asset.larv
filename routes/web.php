@@ -25,6 +25,7 @@ Route::resource('/permissions', 'PermissionController');
 Route::post('/permissions/import', 'PermissionController@storeWithExcel')->name('permissions.store.import');
 Route::resource('/roles', 'RoleController');
 Route::resource('/users', 'UserController');
+Route::get('/user/export', 'UserController@exportToExcel');
 Route::middleware(['auth', 'permission_by_method'])->group(function () {
     Route::resource('/menus', 'MenuController');
     Route::post('/menus/upsort', 'MenuController@updateSort')->name('menus.update.sort');

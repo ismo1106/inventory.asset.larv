@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Yajra\Datatables\Facades\Datatables;
 use Spatie\Permission\Models\Role;
 use App\User;
+use Excel;
 
 class UserController extends Controller {
 
@@ -144,6 +145,34 @@ class UserController extends Controller {
     public function destroy($id)
     {
         //
+    }
+
+    public function exportToExcel()
+    {
+        $users = User::select('name', 'username', 'email', 'created_at')->get();
+
+        $usersArray = [];
+        // Define the Excel spreadsheet headers
+        $usersArray[] = ['Name', 'Username', 'Email', 'Created At'];
+        // Convert each member of the returned collection into an array,
+        // and append it to the payments array.
+        foreach ($users as $user) {
+            $usersArray[] = $user->toArray();
+        }
+
+        // Generate and return the spreadsheet
+        Excel::create('users', function($excel) use ($usersArray) {
+
+            // Set the spreadsheet title, creator, and description
+            $excel->setTitle('Users');
+            $excel->setCreator('Team')->setCompany('Fast App');
+            $excel->setDescription('users file');
+
+            // Build the spreadsheet, passing in the payments array
+            $excel->sheet('sheet1', function($sheet) use ($usersArray) {
+                $sheet->fromArray($usersArray, null, 'A1', false, false);
+            });
+        })->download('xlsx');
     }
 
 }

@@ -16,6 +16,7 @@
             <div class="panel-heading">
                 <div class="panel-heading-btn">
                     <a id="add-user" href="{{ route('users.create') }}" class="btn btn-xs btn-success ladda-button" data-style="slide-left"><span class="ladda-label">Add User</span></a>
+                    <a id="add-user" href="{{ url('user/export') }}" class="btn btn-xs btn-primary"><i class="fa fa-file-excel-o"></i> Export</a>
                     <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
                 </div>
                 <h4 class="panel-title">User</h4>
