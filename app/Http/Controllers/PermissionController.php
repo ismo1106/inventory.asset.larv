@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Validator;
+use Excel;
 
 class PermissionController extends Controller {
 
@@ -61,6 +63,40 @@ class PermissionController extends Controller {
         }
 
         return redirect()->route('permissions.index')->with('success_message', 'Permission' . $permission->name . ' added!');
+    }
+
+    public function storeWithExcel(Request $request)
+    {
+        $validator = Validator::make([
+                    'file_import' => $request->file('file_import'),
+                    'extension' => strtolower($request->file('file_import')->getClientOriginalExtension()),
+                        ], [
+                    'file_import' => 'required',
+                    'extension' => 'required|in:csv,xls,xlsx',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+        if ($request->hasFile('file_import')) {
+            //return 'have a file';
+            $path = $request->file('file_import')->getRealPath();
+            $fileName = $request->file('file_import')->getClientOriginalName();
+            $partName = 'Import Permission ' . ' ' . date('Ymd-His') . ' ';
+
+            $dataCSV = Excel::load($path, function ($reader) {
+                        $reader->toArray();
+                    })->get();
+            if (!empty($dataCSV) && $dataCSV->count() && isset($dataCSV[0]['permission'])):
+                $request->file('file_import')->storeAs('Permission', $partName . $fileName, 'public');
+                foreach ($dataCSV as $csv):
+                    Permission::create(['name' => trim($csv['permission'])]);
+                endforeach;
+                return back()->with('success_message', 'Import has been added.');
+            else:
+                return back()->with('error_message', 'File Data Excel/CSV Kosong atau Format Data Salah...');
+            endif;
+        }
     }
 
     /**

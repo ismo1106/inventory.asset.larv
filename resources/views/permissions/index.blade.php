@@ -50,6 +50,7 @@
         <div class="panel panel-inverse">
             <div class="panel-heading">
                 <div class="panel-heading-btn">
+                    <a href="#modal-import-permission" class="btn btn-xs btn-success" data-toggle="modal"><i class="fa fa-file-excel-o"></i> Import</a>
                     <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
                 </div>
                 <h4 class="panel-title">Permissions</h4>
@@ -91,6 +92,29 @@
                 <h4 class="modal-title">Edit Permission</h4>
             </div>
             <div id="modal-content-edit-permission" class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Upload Excel -->
+<div class="modal fade" id="modal-import-permission" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Import Permission</h4>
+            </div>
+            <div id="modal-content-import-permission" class="modal-body">
+                {{ Form::open(array('route' => 'permissions.store.import', 'files' => true)) }}
+
+                <div class="form-group">
+                    {{ Form::label('file_import', 'File Spreadsheet ') }}
+                    {{ Form::file('file_import', array('class' => 'form-control')) }}
+                </div>
+                <br>
+                {{ Form::submit('Upload', array('class' => 'btn btn-primary')) }}
+                {{ Form::close() }}
             </div>
         </div>
     </div>

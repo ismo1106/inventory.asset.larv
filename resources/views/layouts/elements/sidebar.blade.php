@@ -9,7 +9,7 @@
                     <a href="javascript:;"><img src="{{ asset('assets/img/user-13.jpg') }}" alt="" /></a>
                 </div>
                 <div class="info">
-                    Sean Ngu
+                    {{ auth()->user()->name }}
                     <small>Front end developer</small>
                 </div>
             </li>
@@ -19,7 +19,7 @@
         <ul class="nav">
             <!--<li class="nav-header">Navigation</li>-->
             <li class="active">
-                <a href="javascript:;">
+                <a href="{{ url('home') }}">
                     <i class="fa fa-home"></i>
                     <span>Dashboard</span>
                 </a>
@@ -33,7 +33,8 @@
                 <ul class="sub-menu">
                     <li><a href="{!! route('permissions.index') !!}">Permission</a></li>
                     <li><a href="{!! route('roles.index') !!}">Role</a></li>
-                    <li><a href="{!! route('users.index') !!}">User - OnProgress</a></li>
+                    <li><a href="{!! route('menus.index') !!}">Menu</a></li>
+                    <li><a href="{!! route('users.index') !!}">User</a></li>
                     <li><a href="{!! route('lookups.index') !!}">Lookup</a></li>
                     <li><a href="{!! route('units.index') !!}">Unit</a></li>
                     <li><a href="{!! route('cities.index') !!}">City</a></li>

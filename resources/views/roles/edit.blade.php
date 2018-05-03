@@ -6,8 +6,8 @@
 <h5><b>Assign Permissions</b></h5>
 <div class="form-group">
     @foreach ($permissions as $permission)
-    {{Form::checkbox('permissions[]',  $permission->id, $role->permissions ) }}
-    {{Form::label($permission->name, ucfirst($permission->name)) }}<br>
+    {{ Form::checkbox('permissions[]',  $permission->id, $role->permissions, array('id' => $permission->name)) }}
+    {{ Form::label($permission->name, ucfirst($permission->name)) }}<br>
     @endforeach
 </div>
 <div class="form-group">

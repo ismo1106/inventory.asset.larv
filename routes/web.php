@@ -22,6 +22,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('/permissions', 'PermissionController');
+Route::post('/permissions/import', 'PermissionController@storeWithExcel')->name('permissions.store.import');
 Route::resource('/roles', 'RoleController');
 Route::resource('/users', 'UserController');
 Route::middleware(['auth', 'permission_by_method'])->group(function () {
