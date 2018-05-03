@@ -1,0 +1,7 @@
+﻿permission
+Menu.index
+Menu.create
+Menu.store
+Menu.edit
+Menu.update
+Menu.destroy
