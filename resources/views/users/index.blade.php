@@ -91,7 +91,42 @@ jQuery(document).ready(function () {
             {data: 'actions', name: 'actions', orderable: false, searchable: false, className: 'nowrap flex'}
         ]
     }).on('draw', function () {
-        
+        $('.edit-user').click(function (e) {
+            e.preventDefault();
+            var l = Ladda.create(this);
+            var ini = $(this);
+            l.start();
+            $(this).addClass('disabled');
+
+            var url = $(this).attr('href');
+            $.get(url, function (response) {
+                l.stop();
+                ini.removeClass('disabled');
+                $('#modal-content-edit-user').html(response);
+                $('#modal-edit-user').modal('show');
+            }).fail(function () {
+                l.stop();
+                ini.removeClass('disabled');
+                swal('Oh snap..', 'Has been error on system', 'error');
+            });
+        });
+
+        $('.delete-user').click(function (e) {
+            e.preventDefault();
+            var ini = $(this).parent('form');
+            swal({
+                title: "Are you sure?",
+                text: "User akan dihapus!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            }, function () {
+                ini.submit();
+            });
+        });
     });
 
     $('#add-user').click(function (e) {
@@ -111,43 +146,6 @@ jQuery(document).ready(function () {
             l.stop();
             ini.removeClass('disabled');
             swal('Oh snap..', 'Has been error on system', 'error');
-        });
-    });
-    
-    $('.edit-pm').click(function (e) {
-        e.preventDefault();
-        var l = Ladda.create(this);
-        var ini = $(this);
-        l.start();
-        $(this).addClass('disabled');
-
-        var url = $(this).attr('href');
-        $.get(url, function (response) {
-            l.stop();
-            ini.removeClass('disabled');
-            $('#modal-content-edit-permission').html(response);
-            $('#modal-edit-permission').modal('show');
-        }).fail(function () {
-            l.stop();
-            ini.removeClass('disabled');
-            swal('Oh snap..', 'Has been error on system', 'error');
-        });
-    });
-
-    $('.delete-pm').click(function (e) {
-        e.preventDefault();
-        var ini = $(this).parent('form');
-        swal({
-            title: "Are you sure?",
-            text: "Permission akan dihapus secara permanen!",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonClass: "btn-danger",
-            confirmButtonText: "Yes, delete it!",
-            closeOnConfirm: false,
-            showLoaderOnConfirm: true
-        }, function () {
-            ini.submit();
         });
     });
 });

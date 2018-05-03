@@ -1,76 +1,77 @@
 <!DOCTYPE html>
-<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
-<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="en">
     <!--<![endif]-->
-    <!-- BEGIN HEAD -->
     <head>
         <meta charset="utf-8" />
         <title>401 | Access Denied</title>
-        <!-- BEGIN GLOBAL MANDATORY STYLES -->
-        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
-        <link href="{{ asset('admin_/global/plugins/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
-        <link href="{{ asset('admin_/global/plugins/simple-line-icons/simple-line-icons.min.css') }}" rel="stylesheet" type="text/css" />
-        <link href="{{ asset('admin_/global/plugins/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
-        <link href="{{ asset('admin_/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css') }}" rel="stylesheet" type="text/css" />
-        <!-- END GLOBAL MANDATORY STYLES -->
-        <!-- BEGIN THEME GLOBAL STYLES -->
-        <link href="{{ asset('admin_/global/css/components.min.css') }}" rel="stylesheet" id="style_components" type="text/css" />
-        <link href="{{ asset('admin_/global/css/plugins.min.css') }}" rel="stylesheet" type="text/css" />
-        <!-- END THEME GLOBAL STYLES -->
-        <!-- BEGIN PAGE LEVEL STYLES -->
-        <link href="{{ asset('admin_/pages/css/error.min.css') }}" rel="stylesheet" type="text/css" />
-        <!-- END PAGE LEVEL STYLES -->
-        <!-- BEGIN THEME LAYOUT STYLES -->
-        <!-- END THEME LAYOUT STYLES -->
-        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" /> 
-        <link rel="icon" href="{{ asset('favicon.ico') }}" /> 
-    </head>
-    <!-- END HEAD -->
+        <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+        <meta content="" name="description" />
+        <meta content="" name="author" />
 
-    <body class=" page-404-3">
-        <div class="page-inner">
-            <img src="{{ asset('images/ball.png') }}" class="img-responsive" alt=""> </div>
-        <div class="container error-404">
-            <h1>401</h1>
-            <h2>Oops! Access Denied.</h2>
-            <p> The request has not been applied because it lacks valid authentication credentials for the target resource. </p>
-            <p>
-                @role('Admin')
-                <a href="{{ url('admin')}} " class="btn red btn-outline"> Return dashboard </a>
-                @else
-                <a href="/" class="btn red btn-outline"> Return home </a>
-                @endrole
-                <br> </p>
+        <!-- ================== BEGIN BASE CSS STYLE ================== -->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+        <link href="{{ asset('assets/plugins/jquery-ui/themes/base/minified/jquery-ui.min.css') }}" rel="stylesheet" />
+        <link href="{{ asset('assets/plugins/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" />
+        <link href="{{ asset('assets/plugins/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" />
+        <link href="{{ asset('assets/css/animate.min.css') }}" rel="stylesheet" />
+        <link href="{{ asset('assets/css/style.min.css') }}" rel="stylesheet" />
+        <link href="{{ asset('assets/css/style-responsive.min.css') }}" rel="stylesheet" />
+        <link href="{{ asset('assets/css/theme/default.css') }}" rel="stylesheet" id="theme" />
+        <!-- ================== END BASE CSS STYLE ================== -->
+
+        <!-- ================== BEGIN BASE JS ================== -->
+        <script src="{{ asset('assets/plugins/pace/pace.min.js') }}"></script>
+        <!-- ================== END BASE JS ================== -->
+    </head>
+    <body class="pace-top">
+        <!-- begin #page-loader -->
+        <div id="page-loader" class="fade in"><span class="spinner"></span></div>
+        <!-- end #page-loader -->
+
+        <!-- begin #page-container -->
+        <div id="page-container" class="fade">
+            <!-- begin error -->
+            <div class="error">
+                <div class="error-code m-b-10">401 <i class="fa fa-warning"></i></div>
+                <div class="error-content">
+                    <div class="error-message">Oops! Access Denied...</div>
+                    <div class="error-desc m-b-20">
+                        The request has not been applied because it lacks valid authentication credentials for the target resource
+                    </div>
+                    <div>
+                        <a href="{{ url('/') }}" class="btn btn-success">Go Back to Home Page</a>
+                    </div>
+                </div>
+            </div>
+            <!-- end error -->
+
         </div>
+        <!-- end page container -->
+
+        <!-- ================== BEGIN BASE JS ================== -->
+        <script src="{{ asset('assets/plugins/jquery/jquery-1.9.1.min.js') }}"></script>
+        <script src="{{ asset('assets/plugins/jquery/jquery-migrate-1.1.0.min.js') }}"></script>
+        <script src="{{ asset('assets/plugins/jquery-ui/ui/minified/jquery-ui.min.js') }}"></script>
+        <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.min.js') }}"></script>
         <!--[if lt IE 9]>
-        <script src="{{ asset('admin_/global/plugins/respond.min.js') }}"></script>
-        <script src="{{ asset('admin_/global/plugins/excanvas.min.js') }}"></script> 
-        <script src="{{ asset('admin_/global/plugins/ie8.fix.min.js') }}"></script> 
+                <script src="{{ asset('assets/crossbrowserjs/html5shiv.js') }}"></script>
+                <script src="{{ asset('assets/crossbrowserjs/respond.min.js') }}"></script>
+                <script src="{{ asset('assets/crossbrowserjs/excanvas.min.js') }}"></script>
         <![endif]-->
-        <!-- BEGIN CORE PLUGINS -->
-        <script src="{{ asset('admin_/global/plugins/jquery.min.js') }}" type="text/javascript"></script>
-        <script src="{{ asset('admin_/global/plugins/bootstrap/js/bootstrap.min.js') }}" type="text/javascript"></script>
-        <script src="{{ asset('admin_/global/plugins/js.cookie.min.js') }}" type="text/javascript"></script>
-        <script src="{{ asset('admin_/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js') }}" type="text/javascript"></script>
-        <script src="{{ asset('admin_/global/plugins/jquery.blockui.min.js') }}" type="text/javascript"></script>
-        <script src="{{ asset('admin_/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}" type="text/javascript"></script>
-        <!-- END CORE PLUGINS -->
-        <!-- BEGIN THEME GLOBAL SCRIPTS -->
-        <script src="{{ asset('admin_/global/scripts/app.min.js') }}" type="text/javascript"></script>
-        <!-- END THEME GLOBAL SCRIPTS -->
-        <!-- BEGIN THEME LAYOUT SCRIPTS -->
-        <!-- END THEME LAYOUT SCRIPTS -->
+        <script src="{{ asset('assets/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
+        <script src="{{ asset('assets/plugins/jquery-cookie/jquery.cookie.js') }}"></script>
+        <!-- ================== END BASE JS ================== -->
+
+        <!-- ================== BEGIN PAGE LEVEL JS ================== -->
+        <script src="{{ asset('assets/js/apps.min.js') }}"></script>
+        <!-- ================== END PAGE LEVEL JS ================== -->
+
         <script>
-$(document).ready(function ()
-{
-    $('#clickmewow').click(function ()
-    {
-        $('#radio1003').attr('checked', 'checked');
-    });
-})
+$(document).ready(function () {
+    App.init();
+});
         </script>
     </body>
-
 </html>

@@ -23,10 +23,14 @@ class UserController extends Controller {
                             ->addColumn('role', function ($user) {
                                 return ($user->roles()->pluck('name')->implode(' ') ? $user->roles()->pluck('name')->implode(' ') : '-');
                             })
-                            ->addColumn('actions', function () {
-                                return 'ok';
+                            ->addColumn('actions', function ($user) {
+                                $edit = '<a href="' . route('users.edit', $user->id) . '" class="edit-user btn btn-xs btn-info pull-left ladda-button" '
+                                        . 'data-style="slide-left" style="margin-right: 3px;"><span class="ladda-label">Edit</span></a>';
+                                $delete = \Form::open(['method' => 'DELETE', 'route' => ['users.destroy', $user->id]])
+                                        . \Form::submit('Delete', ['class' => 'delete-user btn btn-xs btn-danger']) . \Form::close();
+                                return $edit . $delete;
                             })
-                            ->make(true);
+                            ->rawColumns(['actions'])->make(true);
         }
         return view('users.index', compact('users'));
     }
@@ -87,7 +91,7 @@ class UserController extends Controller {
      */
     public function show($id)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -98,7 +102,9 @@ class UserController extends Controller {
      */
     public function edit($id)
     {
-        //
+        $user = User::find($id);
+        $roles = Role::get();
+        return view('users.edit', compact('user', 'roles'));
     }
 
     /**
@@ -110,7 +116,23 @@ class UserController extends Controller {
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::findOrFail($id);
+        $this->validate($request, [
+            'name' => 'required|max:120',
+            'username' => 'required|max:120|unique:users,username,' . $id,
+            'email' => 'required|email|unique:users,email,' . $id,
+        ]);
+
+        $input = $request->only(['name', 'email', 'username']);
+        $roles = $request['roles'];
+        $user->fill($input)->save();
+
+        if (isset($roles)) {
+            $user->roles()->sync($roles);
+        } else {
+            $user->roles()->detach();
+        }
+        return redirect()->route('users.index')->with('success_message', 'User successfully edited.');
     }
 
     /**
