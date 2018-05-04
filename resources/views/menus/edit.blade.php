@@ -1,15 +1,15 @@
-{{ Form::model($role, array('route' => array('roles.update', $role->id), 'method' => 'PUT')) }}
+{{ Form::model($menu, array('route' => array('menus.update', $menu->id), 'method' => 'PUT')) }}
+{{ Form::open(array('url' => 'menus')) }}
 <div class="form-group">
-    {{ Form::label('name', 'Role Name') }}
+    {{ Form::label('name', 'Name') }}
     {{ Form::text('name', null, array('class' => 'form-control')) }}
 </div>
-<h5><b>Assign Permissions</b></h5>
+
 <div class="form-group">
-    @foreach ($permissions as $permission)
-    {{Form::checkbox('permissions[]',  $permission->id, $role->permissions ) }}
-    {{Form::label($permission->name, ucfirst($permission->name)) }}<br>
-    @endforeach
+    {{ Form::label('url', 'URL') }}
+    {{ Form::text('url', null, array('class' => 'form-control')) }}
 </div>
+
 <div class="form-group">
     {{ Form::submit('Edit', array('class' => 'btn btn-primary')) }}
 </div>

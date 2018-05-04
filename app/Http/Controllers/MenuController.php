@@ -102,7 +102,7 @@ class MenuController extends Controller {
      */
     public function edit(Menu $menu)
     {
-        //
+        return view('menus/edit', compact('menu'));
     }
 
     /**
@@ -114,7 +114,17 @@ class MenuController extends Controller {
      */
     public function update(Request $request, Menu $menu)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required',
+            'url' => 'required',
+        ]);
+
+        $menu->name = $request->input('name');
+        $menu->url = $request->input('url');
+        $menu->updated_by = auth()->user()->id;
+        $menu->save();
+
+        return back()->with('success_message', 'Menu successfully edited.');
     }
 
     /**
@@ -125,23 +135,8 @@ class MenuController extends Controller {
      */
     public function destroy(Menu $menu)
     {
-        //
-    }
-
-    public function testMethod()
-    {
-        $routeArray = request()->route()->getAction();
-        $controllerAction = class_basename($routeArray['controller']);
-        list($controller, $action) = explode('@', $controllerAction);
-
-        $nameClass = rtrim($controller, 'Controller');
-        $nameMethod = request()->route()->getActionMethod();
-
-        return response()->json([
-                    $nameClass,
-                    $nameMethod,
-                    1
-        ]);
+        $menu->delete();
+        return back()->with('success_message', 'Menu successfully deleted to trash.');
     }
 
 }

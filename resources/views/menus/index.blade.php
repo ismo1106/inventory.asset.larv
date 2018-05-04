@@ -8,6 +8,17 @@
 <link href="{{ asset('css/nestable.css') }}" rel="stylesheet">
 @endpush
 
+@push('style')
+<style>
+    .dd-handle{
+        width: 90%;
+    }
+    .action-me{
+        margin-top: -32px
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="row">
     <div class="col-md-6 col-sm-12">
@@ -51,24 +62,28 @@
                     <ol class="dd-list">
                         @foreach($menus['level_1'] as $mn1)
                         <li class="dd-item" data-id="{{ $mn1->id }}">
-                            <div class="dd-handle">{{ $mn1->name }} 
-                                <span class="pull-right">
-                                    <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success"><i class="fa fa-pencil"></i></a>
-                                    <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger"><i class="fa fa-trash-o"></i></a>
-                                </span>
-                            </div>
+                            <div class="dd-handle">{{ $mn1->name }}</div>
+                            <span class="pull-right action-me">
+                                <a href="{{ route('menus.edit', $mn1->id) }}" class="mn-edit btn btn-xs btn-icon btn-circle btn-success ladda-button" data-style="slide-left">
+                                    <span class="ladda-label"><i class="fa fa-pencil"></i></span></a>
+                                <a href="{{ route('menus.destroy', $mn1->id) }}" class="mn-delete btn btn-xs btn-icon btn-circle btn-danger" data-del="form-delmenu-{{$mn1->id}}"><i class="fa fa-trash-o"></i></a>
+                                {!! Form::open(['method' => 'DELETE', 'route' => ['menus.destroy', $mn1->id], 'class' => 'form-delmenu-' . $mn1->id]) !!}
+                                {!! Form::close() !!}
+                            </span>
                             @if(\App\Helpers\MenuCheck::__haveChild($mn1->id))
                             <ol class="dd-list">
                                 @endif
                                 @foreach($menus['level_2'] as $mn2)
                                 @if($mn2->header == $mn1->id)
                                 <li class="dd-item" data-id="{{ $mn2->id }}">
-                                    <div class="dd-handle">{{ $mn2->name }}
-                                        <span class="pull-right">
-                                            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success"><i class="fa fa-pencil"></i></a>
-                                            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger"><i class="fa fa-trash-o"></i></a>
-                                        </span>
-                                    </div>
+                                    <div class="dd-handle">{{ $mn2->name }}</div>
+                                    <span class="pull-right action-me">
+                                        <a href="{{ route('menus.edit', $mn2->id) }}" class="mn-edit btn btn-xs btn-icon btn-circle btn-success ladda-button" data-style="slide-left">
+                                            <span class="ladda-label"><i class="fa fa-pencil"></i></span></a>
+                                        <a href="{{ route('menus.destroy', $mn2->id) }}" class="mn-delete btn btn-xs btn-icon btn-circle btn-danger" data-del="form-delmenu-{{$mn2->id}}"><i class="fa fa-trash-o"></i></a>
+                                        {!! Form::open(['method' => 'DELETE', 'route' => ['menus.destroy', $mn2->id], 'class' => 'form-delmenu-' . $mn2->id]) !!}
+                                        {!! Form::close() !!}
+                                    </span>
                                 </li>
                                 @endif
                                 @endforeach
@@ -85,7 +100,7 @@
                 {{ Form::open(array('route' => 'menus.update.sort')) }}
                 <textarea name="txt-sort" id="nestable-output" class="hide"></textarea>
                 <div class="form-group m-t-20">
-                    {{ Form::submit('Update', array('class' => 'btn btn-primary btn-sm btn-block')) }}
+                    {{ Form::submit('Sort & Update', array('class' => 'btn btn-primary btn-sm btn-block')) }}
                 </div>
                 {{ Form::close() }}
             </div>
@@ -93,15 +108,15 @@
     </div>
 </div>
 
-<!-- Modal Edit Account User -->
-<div class="modal fade" id="modal-edit-role" tabindex="-1" role="dialog" aria-hidden="true">
+<!-- Modal Edit Menu -->
+<div class="modal fade" id="modal-edit-menu" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">Edit Role</h4>
+                <h4 class="modal-title">Edit Menu</h4>
             </div>
-            <div id="modal-content-edit-role" class="modal-body">
+            <div id="modal-content-edit-menu" class="modal-body">
             </div>
         </div>
     </div>
@@ -134,7 +149,7 @@ jQuery(document).ready(function () {
 
     updateOutput($('#nestable').data('output', $('#nestable-output')));
 
-    $('.edit-rl').click(function (e) {
+    $('.mn-edit').click(function (e) {
         e.preventDefault();
         var l = Ladda.create(this);
         var ini = $(this);
@@ -145,8 +160,8 @@ jQuery(document).ready(function () {
         $.get(url, function (response) {
             l.stop();
             ini.removeClass('disabled');
-            $('#modal-content-edit-role').html(response);
-            $('#modal-edit-role').modal('show');
+            $('#modal-content-edit-menu').html(response);
+            $('#modal-edit-menu').modal('show');
         }).fail(function () {
             l.stop();
             ini.removeClass('disabled');
@@ -154,12 +169,12 @@ jQuery(document).ready(function () {
         });
     });
 
-    $('.delete-rl').click(function (e) {
+    $('.mn-delete').click(function (e) {
         e.preventDefault();
-        var ini = $(this).parent('form');
+        var fmDel = $(this).data('del');
         swal({
             title: "Are you sure?",
-            text: "Role akan dihapus secara permanen!",
+            text: "Menu akan dihapus!",
             type: "warning",
             showCancelButton: true,
             confirmButtonClass: "btn-danger",
@@ -167,7 +182,7 @@ jQuery(document).ready(function () {
             closeOnConfirm: false,
             showLoaderOnConfirm: true
         }, function () {
-            ini.submit();
+            $('.' + fmDel).submit();
         });
     });
 });
