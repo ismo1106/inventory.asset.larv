@@ -45,6 +45,7 @@ class MenuController extends Controller {
         Menu::create([
             'name' => $request->input('name'),
             'url' => $request->input('url'),
+            'icon' => $request->input('icon'),
             'updated_by' => auth()->user()->id,
         ]);
         return back()->with('success_message', 'Menu successfully added.');
@@ -121,6 +122,7 @@ class MenuController extends Controller {
 
         $menu->name = $request->input('name');
         $menu->url = $request->input('url');
+        $menu->icon = $request->input('icon');
         $menu->updated_by = auth()->user()->id;
         $menu->save();
 

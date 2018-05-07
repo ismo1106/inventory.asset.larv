@@ -15,6 +15,7 @@ class Menu extends Model {
         'url',
         'header',
         'order',
+        'icon',
         'updated_by'
     ];
 

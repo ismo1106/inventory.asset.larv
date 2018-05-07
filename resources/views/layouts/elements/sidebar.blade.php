@@ -43,6 +43,23 @@
                     <li><a href="{!! route('urbanvillages.index') !!}">Urban Village</a></li>
                 </ul>
             </li>
+            @foreach(\App\Helpers\MenuCheck::__getMenuHeader() as $menu1)
+            <li class="{{ (\App\Helpers\MenuCheck::__haveChild($menu1->id)? 'has-sub': '')}}">
+                <a href="{{ (\App\Helpers\MenuCheck::__haveChild($menu1->id)?  'javascript:;' : url($menu1->url)) }}">
+                    @if(!empty($menu1->icon))
+                    <i class="fa {{ $menu1->icon }}"></i>
+                    @endif
+                    <span>{{ $menu1->name }}</span>
+                </a>
+                @if(\App\Helpers\MenuCheck::__haveChild($menu1->id))
+                <ul class="sub-menu">
+                    @foreach(\App\Helpers\MenuCheck::__getMenuChild() as $menu2)
+                    <li><a href="{{ url($menu2->url) }}">{{ $menu2->name }}</a></li>
+                    @endforeach
+                </ul>
+                @endif
+            </li>
+            @endforeach
             <!-- begin sidebar minify button -->
             <li><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i class="fa fa-angle-double-left"></i></a></li>
             <!-- end sidebar minify button -->

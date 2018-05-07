@@ -11,6 +11,16 @@
 </div>
 
 <div class="form-group">
+    {{ Form::label('icon', 'Icon') }}
+    <select name="icon" class="form-control select-fa">
+        <option>Choose...</option>
+        @foreach(\App\Helpers\MenuCheck::__optFA() as $faKey => $fa)
+        <option value="{{$faKey}}">&#x{!!$fa!!} {{$faKey}}</option>
+        @endforeach
+    </select>
+</div>
+
+<div class="form-group">
     {{ Form::submit('Edit', array('class' => 'btn btn-primary')) }}
 </div>
 {{ Form::close() }} 

@@ -16,6 +16,10 @@
     .action-me{
         margin-top: -32px
     }
+    .select-fa{
+        font-family: 'FontAwesome', 'sans-serif';
+        font-size: 15px
+    }
 </style>
 @endpush
 
@@ -39,6 +43,16 @@
                 <div class="form-group">
                     {{ Form::label('url', 'URL') }}
                     {{ Form::text('url', null, array('class' => 'form-control')) }}
+                </div>
+
+                <div class="form-group">
+                    {{ Form::label('icon', 'Icon') }}
+                    <select name="icon" class="form-control select-fa">
+                        <option>Choose...</option>
+                        @foreach(\App\Helpers\MenuCheck::__optFA() as $faKey => $fa)
+                        <option value="{{$faKey}}">&#x{!!$fa!!} {{$faKey}}</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div class='form-group'>
@@ -72,7 +86,6 @@
                             </span>
                             @if(\App\Helpers\MenuCheck::__haveChild($mn1->id))
                             <ol class="dd-list">
-                                @endif
                                 @foreach($menus['level_2'] as $mn2)
                                 @if($mn2->header == $mn1->id)
                                 <li class="dd-item" data-id="{{ $mn2->id }}">
@@ -87,7 +100,6 @@
                                 </li>
                                 @endif
                                 @endforeach
-                                @if(\App\Helpers\MenuCheck::__haveChild($mn1->id))
                             </ol>
                             @endif
                         </li>
