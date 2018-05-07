@@ -105,6 +105,17 @@
         <script>
 $(document).ready(function () {
     App.init();
+    var currentLink = '{{ url()->current() }}';
+    $('a.nav-link ').each(function (e) {
+        var thisLink = $(this).prop('href');
+        if (thisLink == currentLink) {
+            $(this).parent().addClass('active');
+            if ($(this).parent().parent().hasClass('sub-menu')) {
+                $(this).parent().parent().parent().addClass('active');
+//                $(this).parent().parent().parent().find('span.arrow').addClass('open');
+            }
+        }
+    });
 });
         </script>
 
